@@ -1,3 +1,4 @@
 *.o
 *.swp
 alsa-capture
+alsa-play

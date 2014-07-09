@@ -1,4 +1,4 @@
-TARGETS = alsa-capture
+TARGETS = alsa-capture alsa-play
 
 all: $(TARGETS)
 
@@ -12,3 +12,5 @@ install: $(TARGETS)
 	install -s -m 0755 $^ $(DESTDIR)/$(PREFIX)/bin
 
 alsa-capture: CFLAGS += `pkg-config alsa --cflags --libs`
+alsa-play: CFLAGS += `pkg-config alsa --cflags --libs`
+alsa-play: bipbuf.o
