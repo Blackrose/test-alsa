@@ -1,4 +1,4 @@
-TARGETS =
+TARGETS = alsa-capture
 
 all: $(TARGETS)
 
@@ -10,3 +10,5 @@ PREFIX ?= /usr/local
 install: $(TARGETS)
 	install -D -d $(DESTDIR)/$(PREFIX)/bin
 	install -s -m 0755 $^ $(DESTDIR)/$(PREFIX)/bin
+
+alsa-capture: CFLAGS += `pkg-config alsa --cflags --libs`
