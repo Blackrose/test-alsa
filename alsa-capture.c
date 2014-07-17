@@ -9,6 +9,11 @@
 #include <unistd.h>
 #include <alsa/asoundlib.h>
 
+#define DURATION  5  /* 5 seconds */
+
+#define CHANNELS  2
+#define RATE      44100
+
 #define LATENCY  1000  /* 1ms */
 
 int main (int argc, char *argv[])
@@ -17,8 +22,8 @@ int main (int argc, char *argv[])
 	snd_pcm_t *pcm;
 	snd_pcm_uframes_t buffer_size, period_size;
 	void *buffer;
-	unsigned long loops;
 	size_t count;
+	ssize_t rest;
 
 	/* We do not want garbage on the terminal */
 	if (isatty (1)) {
@@ -32,7 +37,7 @@ int main (int argc, char *argv[])
 		goto no_device;
 
 	rc = snd_pcm_set_params (pcm, SND_PCM_FORMAT_S16_LE,
-				 SND_PCM_ACCESS_RW_INTERLEAVED, 2, 44100,
+				 SND_PCM_ACCESS_RW_INTERLEAVED, CHANNELS, RATE,
 				 1, LATENCY);
 	if (rc < 0)
 		goto no_set_params;
@@ -49,8 +54,8 @@ int main (int argc, char *argv[])
 		return 1;
 	}
 
-	/* Main loop, 5 seconds run */
-	for (loops = 5000000 / LATENCY; loops > 0; --loops) {
+	/* Main loop */
+	for (rest = DURATION * RATE; rest > 0;) {
 		rc = snd_pcm_readi (pcm, buffer, period_size);
 		if (rc < 0) {
 			if (snd_pcm_recover (pcm, rc, 1) < 0)
@@ -61,6 +66,7 @@ int main (int argc, char *argv[])
 		else {
 			count = snd_pcm_frames_to_bytes (pcm, rc);
 			write (1, buffer, count);
+			rest -= rc;
 		}
 	}
 
