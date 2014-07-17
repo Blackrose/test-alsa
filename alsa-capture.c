@@ -47,7 +47,7 @@ int main (int argc, char *argv[])
 		goto no_get_params;
 
 	/* Allocate software buffer */
-	count = snd_pcm_frames_to_bytes (pcm, period_size);
+	count = snd_pcm_frames_to_bytes (pcm, buffer_size);
 	buffer = malloc (count);
 	if (buffer == NULL) {
 		perror ("buffer allocation");
@@ -56,7 +56,7 @@ int main (int argc, char *argv[])
 
 	/* Main loop */
 	for (rest = DURATION * RATE; rest > 0;) {
-		rc = snd_pcm_readi (pcm, buffer, period_size);
+		rc = snd_pcm_readi (pcm, buffer, buffer_size);
 		if (rc < 0) {
 			if (snd_pcm_recover (pcm, rc, 1) < 0)
 				fprintf (stderr, "pcm read error: %s\n",
