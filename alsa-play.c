@@ -63,7 +63,7 @@ int main (int argc, char *argv[])
 			if (rc < 0) {
 				if (snd_pcm_recover (pcm, rc, 1) < 0)
 					fprintf (stderr, "pcm write error: %s\n",
-						 snd_strerror(rc));
+						 snd_strerror (rc));
 				/* Try to ignore errors */
 			}
 			else
